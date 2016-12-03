@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- 4.0.0
+before_script:
+- npm install -g gulp
+script:
+- gulp travis
+sudo: false
+deploy:
+  provider: heroku
+  app: schlaumeier
+  skip_cleanup: true
+  api_key:
+    secure: h11QPkqzbpDA/ntgmCaPF0DJxK7CPBGCPUN3HbetqDF8lWP9oQ+p7sN2RISOgzdVQvgXUYqc/SUFa4E40SjhSW3w1YkkkQggV1moLBYzIv1OoE0AU79RwdH9bc6RPvXJazy1FmwD1tKElm+guAEAP8I+aDbeQcvznf7xYbBotAC6lZDi5YmFdP3S9sF2mOfP4n1F1QgZz3YgrTpDd124bFT9u0qd8k7C4h9BaSyfsR7yiyeSWlDqBVuxsIdQoIwgnmmujHYiXSBGkXPDNVYbmYth3DTMo6jhncjWDWs6rFQJizZ4pHsjTXs7XDja/QLpj4pPLkkDbpEGQaLhCYIsvq+WDZSV0VV+3pHnRAhrAD36lKN9zw6/AxEiCh5DY8FVFClxBlKqOrCPFfGoGeTu0vFvmaTdiB9EggzyQOWWp1PYCKupy24bKXYtj1wdiA0GqtK7LXlB98ot81EbkjXtFb5AFA3tgQcwDd6o+btG0g1FOW8/njQwcWDL5heKYMETGG5y7ei8bd34Z183747RD9ugdia1dYFXa1dLeXHAe8/GSSK4ZM5703JLenaSQBJyr+iYWBmrtw3ymIqcJf/K6KnC8TCLCbOYMI1O9V1gjr3YuQBNx26IwO8OQldJ7B8pyCbMlyCbjmqcbLdA5hwfmxwoM/aiP6jvsP7tOrm+dQQ=
