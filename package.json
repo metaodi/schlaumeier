@@ -23,7 +23,11 @@
   "dependencies": {
     "async": "^1.5.2",
     "botkit": "0.0.5",
+    "csvtojson": "^1.0.3",
+    "express": "^4.14.0",
+    "node-highcharts-exporting": "0.0.4",
     "superagent": "^1.7.0",
+    "taffy": "^2.6.2",
     "underscore": "^1.8.3",
     "xregexp": "^3.0.0"
   },
