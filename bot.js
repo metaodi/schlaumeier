@@ -1,7 +1,7 @@
 var express = require('express');
 var TAFFY = require("taffy");
 var Botkit = require('botkit');
-var _ = require('underscore');
+var _ = require('lodash');
 var controller = Botkit.slackbot();
 var answers = require('./lib/answers');
 
@@ -16,6 +16,63 @@ _.each(tokens, function(token) {
         throw new Error('Could not connect to Slack');
       }
     });
+});
+
+var Converter = require("csvtojson").Converter;
+var csvConverter = new Converter({'delimiter': ';'});
+
+var data = {};
+
+data.addresses = null
+csvConverter.fromFile('./data/adressen.csv', function(err, jsonObj) {
+    console.log("Error: ", err);
+    var mapped = _.map(jsonObj, function(address) {
+        return _.mapKeys(address, function(val, key) {
+            return key.toLowerCase();
+        });
+    });
+    data.addresses = TAFFY(mapped);
+    console.log(data.addresses().get());
+    console.log("Finished parsing adresses CSV");
+});
+
+data.wbev = null;
+var wbevConverter = new Converter({delimiter: ','});
+wbevConverter.fromFile('./data/bevbestandjahradminsherkunftreligion.csv', function(err, jsonObj) {
+    console.log("Error: ", err);
+    var mapped = _.map(jsonObj, function(bev) {
+        var lower =  _.mapKeys(bev, function(val, key) {
+            return key.toLowerCase();
+        });
+
+        lower['jahr'] = lower['stichtagdatjahr'];
+        lower['stat_zone_sort'] = lower['statzonesort'];
+        lower['stat_zone_name'] = lower['statzonelang'];
+        lower['quariert_sort'] = lower['quarsort']
+        lower['quariert_name'] = lower['quarlang']
+        lower['kreis_sort'] = lower['kreissort']
+        lower['herkunf_sort'] = lower['herkunftsort'];
+        lower['is_ch'] = (lower['herkunf_sort'] === 1);
+        lower['kon_ogd_sort'] = lower['konogdsort'];
+        lower['kon_ogd_kurz'] = lower['konogdkurz'];
+        lower['anzahl'] = lower['anzbestwir'];
+
+        delete lower['stichtagdatjahr'];
+        delete lower['statzonesort'];
+        delete lower['statzonelang'];
+        delete lower['quarsort']
+        delete lower['quarlang']
+        delete lower['kreissort']
+        delete lower['herkunftsort'];
+        delete lower['konogdsort'];
+        delete lower['konogdkurz'];
+        delete lower['anzbestwir'];
+
+        return lower;
+    });
+    data.wbev = TAFFY(mapped);
+    console.log(data.wbev().get());
+    console.log("Finished parsing wbev CSV");
 });
 
 function matcher(text) {
@@ -36,13 +93,12 @@ var requestConfig = [
     }
 ];
 
-
 controller.hears(['.*'], ['direct_message,direct_mention'], function(bot, message) {
     console.log("Bot heard message (" + message.ts + "): " + message.text);
     var noAnswer = _.every(requestConfig, function(request) {
-        var matched = _.any(request.pattern, matcher(message.text));
+        var matched = _.some(request.pattern, matcher(message.text));
         if (matched) {
-            request.answerFn(bot, message);
+            request.answerFn(bot, message, data);
             return false; //break out of every()
         }
         return true; // continue with next requestConfig
@@ -53,7 +109,7 @@ controller.hears(['.*'], ['direct_message,direct_mention'], function(bot, messag
 });
 
 
-// the address API
+// the schlaumeier API
 var app = express();
 
 // Enable CORS so that we can actually use the server for something useful.
@@ -63,33 +119,12 @@ app.all('*', function(req, res, next) {
   next();
 });
 
-var Converter = require("csvtojson").Converter;
-var csvConverter = new Converter({'delimiter': ';'});
-
-var addresses = null;
-csvConverter.fromFile('./data/adressen.csv', function(err, jsonObj) {
-    console.log("Error: ", err);
-    addresses = TAFFY(jsonObj);
-    console.log(addresses().get());
-    console.log("Finished parsing adresses CSV");
-});
-
-var wbev = null;
-var wbevConverter = new Converter({delimiter: ','});
-wbevConverter.fromFile('./data/bevbestandjahradminsherkunftreligion.csv', function(err, jsonObj) {
-    console.log("Error: ", err);
-    wbev = TAFFY(jsonObj);
-    console.log(wbev().get());
-    console.log("Finished parsing wbev CSV");
-});
-
-
 app.get('/address/:address?', function(req, res) {
     try {
-        var result = {"result": addresses().get() };
+        var result = {"result": data.addresses().get() };
         console.log("req.params.address:", req.params.address);
         if (req.params.address) {
-    	    result.result = addresses({'Adresse': {likenocase: req.params.address}}).get();
+    	    result.result = data.addresses({'adresse': {likenocase: req.params.address}}).get();
         } 
     	res.json(result);
     } catch (ex) {
@@ -99,14 +134,14 @@ app.get('/address/:address?', function(req, res) {
 
 app.get('/wbev/:statzone?', function(req, res) {
     try {
-        var result = wbev();
+        var result = data.wbev();
         console.log("req.params.statzone:", req.params.statzone);
-        console.log("req.query.year:", req.query.year);
+        console.log("req.query.jahr:", req.query.jahr);
         if (req.params.statzone) {
-    	    result = wbev({'StatZoneSort': {"==": req.params.statzone}});
+    	    result = data.wbev({'stat_zone_sort': {"==": req.params.statzone}});
         } 
-        if (req.query.year) {
-            result = result.filter({"StichtagDatJahr": {"==": req.query.year}});
+        if (req.query.jahr) {
+            result = result.filter({"jahr": {"==": req.query.jahr}});
         }
     	res.json({"result": result.get() });
     } catch (ex) {
