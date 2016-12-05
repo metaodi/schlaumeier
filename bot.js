@@ -23,7 +23,7 @@ var csvConverter = new Converter({'delimiter': ';'});
 
 var data = {};
 
-data.addresses = null
+data.addresses = null;
 csvConverter.fromFile('./data/adressen.csv', function(err, jsonObj) {
     console.log("Error: ", err);
     var mapped = _.map(jsonObj, function(address) {
@@ -48,9 +48,9 @@ wbevConverter.fromFile('./data/bevbestandjahradminsherkunftreligion.csv', functi
         lower['jahr'] = lower['stichtagdatjahr'];
         lower['stat_zone_sort'] = lower['statzonesort'];
         lower['stat_zone_name'] = lower['statzonelang'];
-        lower['quariert_sort'] = lower['quarsort']
-        lower['quariert_name'] = lower['quarlang']
-        lower['kreis_sort'] = lower['kreissort']
+        lower['quariert_sort'] = lower['quarsort'];
+        lower['quariert_name'] = lower['quarlang'];
+        lower['kreis_sort'] = lower['kreissort'];
         lower['herkunf_sort'] = lower['herkunftsort'];
         lower['is_ch'] = (lower['herkunf_sort'] === 1);
         lower['kon_ogd_sort'] = lower['konogdsort'];
@@ -60,9 +60,9 @@ wbevConverter.fromFile('./data/bevbestandjahradminsherkunftreligion.csv', functi
         delete lower['stichtagdatjahr'];
         delete lower['statzonesort'];
         delete lower['statzonelang'];
-        delete lower['quarsort']
-        delete lower['quarlang']
-        delete lower['kreissort']
+        delete lower['quarsort'];
+        delete lower['quarlang'];
+        delete lower['kreissort'];
         delete lower['herkunftsort'];
         delete lower['konogdsort'];
         delete lower['konogdkurz'];
