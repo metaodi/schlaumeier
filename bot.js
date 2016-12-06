@@ -48,8 +48,8 @@ wbevConverter.fromFile('./data/bevbestandjahradminsherkunftreligion.csv', functi
         lower['jahr'] = lower['stichtagdatjahr'];
         lower['stat_zone_sort'] = lower['statzonesort'];
         lower['stat_zone_name'] = lower['statzonelang'];
-        lower['quariert_sort'] = lower['quarsort'];
-        lower['quariert_name'] = lower['quarlang'];
+        lower['quarier_sort'] = lower['quarsort'];
+        lower['quarier_name'] = lower['quarlang'];
         lower['kreis_sort'] = lower['kreissort'];
         lower['herkunf_sort'] = lower['herkunftsort'];
         lower['is_ch'] = (lower['herkunf_sort'] === 1);
