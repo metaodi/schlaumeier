@@ -29,7 +29,7 @@
     "lodash": "^4.17.2",
     "nchart": "^1.0.1",
     "stream": "0.0.2",
-    "superagent": "^1.7.0",
+    "superagent": "^2.0.0",
     "taffy": "^2.6.2",
     "underscore": "^1.8.3",
     "xregexp": "^3.0.0"
