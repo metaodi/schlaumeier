@@ -22,7 +22,7 @@
   "homepage": "https://github.com/metaodi/schlaumeier",
   "dependencies": {
     "async": "^1.5.2",
-    "botkit": "0.4.2",
+    "botkit": "0.5.5",
     "canvas": "^1.6.2",
     "csvtojson": "^1.0.3",
     "express": "^4.14.0",
