@@ -4,7 +4,9 @@
   "description": "A chatbot for providing interesting information of your area",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -32,7 +34,8 @@
     "superagent": "^1.7.0",
     "taffy": "^2.6.2",
     "underscore": "^1.8.3",
-    "xregexp": "^3.0.0"
+    "xregexp": "^3.0.0",
+    "snyk": "^1.163.0"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
@@ -42,5 +45,6 @@
     "jshint-stylish": "^2.1.0",
     "mocha": "~2.3.4",
     "should": "~8.1.1"
-  }
+  },
+  "snyk": true
 }
